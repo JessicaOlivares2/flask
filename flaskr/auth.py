@@ -15,6 +15,7 @@ def register():
         username = request.form['username']
         password = request.form['password']
         verificar = request.form['verificar']
+        email = request.form['email']
         db = get_db()
         error = None
 
@@ -24,12 +25,14 @@ def register():
             error = 'Se necesita contraseña requerida.'
         elif verificar != password:
             error = 'Las claves no coinciden.'
+        elif not email:
+            error = 'Se necesita email requerido.'
 
         if error is None:
             try:
                 db.execute(
-                    "INSERT INTO user (username, password, verificar) VALUES (?, ?, ?)",
-                    (username, generate_password_hash(password), verificar),
+                    "INSERT INTO user (username, password, verificar,email) VALUES (?, ?, ?, ?)",
+                    (username, generate_password_hash(password), verificar, email),
                 )
                 db.commit()
             except db.IntegrityError:
@@ -61,6 +64,7 @@ def login():
             session.clear()
             session['user_id'] = user['id']
             return redirect(url_for('index'))
+
 
         flash(error)
 
