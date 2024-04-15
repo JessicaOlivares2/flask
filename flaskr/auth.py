@@ -31,8 +31,8 @@ def register():
         if error is None:
             try:
                 db.execute(
-                    "INSERT INTO user (username, password, verificar,email) VALUES (?, ?, ?, ?)",
-                    (username, generate_password_hash(password), verificar, email),
+                    "INSERT INTO user (username, password, verificar, email) VALUES (?, ?, ?, ?)",
+                    (username, generate_password_hash(password),verificar, email),
                 )
                 db.commit()
             except db.IntegrityError:
@@ -92,3 +92,24 @@ def login_required(view):
         return view(**kwargs)
 
     return wrapped_view
+
+@bp.route('/modificar')
+def modificar():
+
+    if request.method == 'POST':
+        email = request.form['nuevoEmail']
+        error = None
+        db = get_db()
+        if not email:
+            error = 'Title is required.'
+
+        if error is not None:
+            db.execute(
+                'UPDATE user SET email = ?'
+                ' WHERE id = ?',
+                (email, g.user[id])
+            )
+            db.commit()
+            return redirect(url_for('index'))
+
+    return render_template('auth/modifyEmail.html')
