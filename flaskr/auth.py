@@ -93,7 +93,7 @@ def login_required(view):
 
     return wrapped_view
 
-@bp.route('/modificar')
+@bp.route('/modificar', methods=('GET', 'POST'))
 def modificar():
 
     if request.method == 'POST':
@@ -101,13 +101,29 @@ def modificar():
         error = None
         db = get_db()
         if not email:
-            error = 'Title is required.'
+            error = 'modificar Email'
 
         if error is not None:
             db.execute(
                 'UPDATE user SET email = ?'
                 ' WHERE id = ?',
-                (email, g.user[id])
+                (email, g.user[id],)
+            )
+            db.commit()
+            return redirect(url_for('index'))
+
+    return render_template('auth/modifyEmail.html')
+
+@bp.route('/borUser', methods=('GET', 'POST'))
+def borUser():
+    if request.method == 'POST':
+        error = None
+        db = get_db()
+
+        if error is not None:
+            db.execute(
+                'DELETE FROM user WHERE id = ?',
+                ( g.user[id],)
             )
             db.commit()
             return redirect(url_for('index'))

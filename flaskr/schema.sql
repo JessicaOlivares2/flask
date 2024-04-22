@@ -1,5 +1,7 @@
 DROP TABLE IF EXISTS user;
 DROP TABLE IF EXISTS post;
+DROP TABLE IF EXISTS votes;
+
 
 CREATE TABLE user (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -16,4 +18,13 @@ CREATE TABLE post (
   title TEXT NOT NULL,
   body TEXT NOT NULL,
   FOREIGN KEY (author_id) REFERENCES user (id)
-)
+);
+
+CREATE TABLE "votes" (
+	"user_id"	INTEGER,
+	"post_id"	INTEGER,
+	"vote"	INTEGER,
+	FOREIGN KEY("user_id") REFERENCES "user"("id"),
+	FOREIGN KEY("post_id") REFERENCES "post"("id"),
+	PRIMARY KEY("user_id","post_id")
+);
